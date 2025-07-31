@@ -1,0 +1,29 @@
+title: Detección de Actividad de Usuario Root en AWS
+id: e91d1d80-8b33-4a45-89be-a6c6c7e5f000 #identificador de la regla
+status: stable
+description: |
+  Detecta cualquier evento registrado en AWS CloudTrail que haya sido ejecutado por el usuario root.
+  El uso del usuario root debe ser extremadamente limitado; cualquier actividad puede indicar un incidente.
+author: Ariel Mendez
+date: 230/07/2025
+logsource:
+  product: aws #Entorno donde funcionara la regla
+  service: cloudtrail #Cloudtrail capturara los logs del evento
+  category: iam #eventos enfocados de IAM (gestión de identidades)
+detection:
+  selection: #definimos los parametros necesarios que buscara la regla
+    userIdentity.type: Root #si el usuario es root, se cumplen los parametros para que la regla se ejecute
+  condition: selection
+fields: #campos que vendran en la alerta
+  - eventTime #momento en que ocurrio la acción
+  - eventName #acción realizada
+  - userIdentity.arn #identidad
+  - sourceIPAddress #IP de origen
+  - awsRegion #región donde esta desplegada el servicio
+level: high
+tags:
+  - attack.t1078.004  #Cuentas validas - Cloud Accounts
+  - attack.t1098      #Manipulación de cuentas
+  - attack.privilege_escalation
+  - cloud
+  - aws
