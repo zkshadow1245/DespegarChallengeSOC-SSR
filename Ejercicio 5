@@ -1,0 +1,28 @@
+title: Detección de Escalada de Privilegios mediante Sudo fuera de horario laboral
+id: 123e4567-e89b-12d3-a456-426614174001
+status: stable
+description: 
+  Detecta uso del comando sudo fuera del horario laboral (09:00 a 18:00).
+  Esta actividad puede indicar abuso de privilegios o ejecución maliciosa de comandos con escalada.
+author: Ariel Mendez
+date: 30/07/2025
+logsource: #no especificamos logsources pero puede ser cualquier dispositivo Unix
+  product: linux
+  service: auditd
+  category: process_creation #creación de proceso
+detection:
+  selection:
+    CommandLine|contains: 'sudo' #realizara la detección si detecta (en el proceso ejecutado) la palabra "sudo"
+  horario_habil:
+    EventTime|between: '09:00:00|18:00:00' #en este caso especificamos el horario laboral
+  condition: selection and not horario_habil #esta regla va a accionar fuera de horario habil (ya que generalmente estas acciones denotan en falsos positivos)
+fields: #estos son los campos que vendran en la alerta
+  - CommandLine
+  - User
+  - EventTime
+  - Process
+level: High #Elegimos como level "high" dado que un usuario sudo tiene permisos para editar, borrar o agregar elementos.
+tags:
+  - attack.t1068
+  - attack.privilege_escalation
+  - linux
