@@ -24,5 +24,6 @@ fields: #estos son los campos que vendran en la alerta
 level: High #Elegimos como level "high" dado que un usuario sudo tiene permisos para editar, borrar o agregar elementos.
 tags:
   - attack.t1068
+  - attack.T1548.003
   - attack.privilege_escalation
   - linux
