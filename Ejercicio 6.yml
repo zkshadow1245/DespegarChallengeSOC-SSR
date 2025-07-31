@@ -1,0 +1,31 @@
+title: Detección de Usuario Agregado a Domain Admins (windows)
+id: 45b1e3a4-5e34-11ee-8c99-0242ac120002
+status: stable
+description: |
+  Detecta cuando una cuenta de usuario es agregada al grupo "Domain Admins" en Active Directory.
+  Esta acción otorga privilegios elevados y puede ser indicio de escalada de privilegios o persistencia maliciosa.
+author: Ariel Mendez
+date: 30/07/2025
+logsource:
+  product: windows
+  service: security
+  category: user_management
+detection:
+  selection:
+    EventID: 4728 #eventID asociado a administración de cuentas a nivel AD
+    TargetUserName: 'Domain Admins'
+  condition: selection
+fields: #campos que contendra la alerta
+  - SubjectUserName
+  - TargetUserName
+  - MemberName
+  - EventID
+  - LogonID
+level: high
+tags:
+  - attack.t1098.002  #Manipulación de cuentas - Domain Accounts
+  - attack.t1078      #Cuentas validas
+  - attack.t1484.001  #Modificación de politicas de grupo
+  - attack.privilege_escalation
+  - windows
+  - active_directory
